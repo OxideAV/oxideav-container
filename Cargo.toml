@@ -1,17 +1,16 @@
 [package]
 name = "oxideav-container"
-version.workspace = true
-edition.workspace = true
-rust-version.workspace = true
-license.workspace = true
-repository.workspace = true
-authors.workspace = true
-description = "Container (demuxer/muxer) traits and registry for oxideav"
-
+version = "0.0.3"
+edition = "2021"
+rust-version = "1.80"
+license = "MIT"
+authors = ["Mark Karpeles"]
+description = "Container (Demuxer + Muxer) traits and registry for oxideav — pure Rust, no C deps"
+repository = "https://github.com/OxideAV/oxideav-container"
+homepage = "https://github.com/OxideAV/oxideav-container"
 readme = "README.md"
-homepage.workspace = true
 keywords = ["multimedia", "container", "demuxer", "muxer", "pure-rust"]
 categories = ["multimedia::encoding", "parser-implementations"]
 
 [dependencies]
-oxideav-core = { workspace = true }
+oxideav-core = "0.0"
