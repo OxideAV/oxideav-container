@@ -8,7 +8,7 @@
 
 pub mod registry;
 
-use oxideav_core::{Packet, Result, StreamInfo};
+use oxideav_core::{CodecResolver, Packet, Result, StreamInfo};
 use std::io::{Read, Seek, Write};
 
 /// Reads a container and emits packets per stream.
@@ -81,7 +81,19 @@ pub trait Muxer: Send {
 ///
 /// Implementations should read the minimum needed to confirm the format and
 /// return `Error::InvalidData` if the stream is not in this format.
-pub type OpenDemuxerFn = fn(input: Box<dyn ReadSeek>) -> Result<Box<dyn Demuxer>>;
+///
+/// The `codecs` parameter carries a resolver that converts container-
+/// level codec tags (FourCCs, WAVEFORMATEX wFormatTag, Matroska
+/// CodecIDs, …) into [`CodecId`](oxideav_core::CodecId) values. Demuxers
+/// that previously maintained hand-written tag-to-codec-id tables
+/// (AVI's codec_map, MP4's sample-entry map, MKV's codec-id map)
+/// should call `codecs.resolve_tag(tag, first_packet_bytes)` instead,
+/// letting the codec crates own their own tag claims with priority +
+/// optional probes. Pass
+/// [`NullCodecResolver`](oxideav_core::NullCodecResolver) when you
+/// don't have a real registry on hand (tests, stub callers).
+pub type OpenDemuxerFn =
+    fn(input: Box<dyn ReadSeek>, codecs: &dyn CodecResolver) -> Result<Box<dyn Demuxer>>;
 
 /// Factory that creates a muxer for a set of streams.
 pub type OpenMuxerFn =

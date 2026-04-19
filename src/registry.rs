@@ -1,6 +1,6 @@
 //! Container registry.
 
-use oxideav_core::{Error, Result, StreamInfo};
+use oxideav_core::{CodecResolver, Error, Result, StreamInfo};
 use std::collections::HashMap;
 use std::io::SeekFrom;
 
@@ -54,13 +54,22 @@ impl ContainerRegistry {
         self.muxers.keys().map(|s| s.as_str())
     }
 
-    /// Open a demuxer explicitly by format name.
-    pub fn open_demuxer(&self, name: &str, input: Box<dyn ReadSeek>) -> Result<Box<dyn Demuxer>> {
+    /// Open a demuxer explicitly by format name. The `codecs` resolver
+    /// is passed through to the demuxer so it can translate the
+    /// container's in-stream codec tags (FourCCs / wFormatTag /
+    /// Matroska CodecIDs) into [`CodecId`](oxideav_core::CodecId)
+    /// values. Demuxers that don't need tag resolution can ignore it.
+    pub fn open_demuxer(
+        &self,
+        name: &str,
+        input: Box<dyn ReadSeek>,
+        codecs: &dyn CodecResolver,
+    ) -> Result<Box<dyn Demuxer>> {
         let open = self
             .demuxers
             .get(name)
             .ok_or_else(|| Error::FormatNotFound(name.to_owned()))?;
-        open(input)
+        open(input, codecs)
     }
 
     /// Open a muxer by format name.
