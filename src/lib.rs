@@ -1,4 +1,10 @@
 //! Container traits (demuxer + muxer) and a registry.
+//!
+//! This crate is deliberately dependency-light: it defines the abstract
+//! [`Demuxer`] / [`Muxer`] traits that every container implementation
+//! (oxideav-mp4, oxideav-mkv, oxideav-flac, oxideav-ogg, …) fulfils,
+//! plus a [`registry::ContainerRegistry`] that the consumers of the
+//! framework use to pick a demuxer by probe bytes or filename hint.
 
 pub mod registry;
 
