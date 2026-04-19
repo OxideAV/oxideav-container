@@ -21,7 +21,7 @@ Zero C dependencies. Zero FFI.
 
 ```toml
 [dependencies]
-oxideav-container = "0.0"
+oxideav-container = "0.1"
 ```
 
 ## License
